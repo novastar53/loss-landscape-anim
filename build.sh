@@ -1,0 +1,1 @@
+docker build . -t gcr.io/$GOOGLE_CLOUD_PROJECT/loss-landscape-anim:latest
