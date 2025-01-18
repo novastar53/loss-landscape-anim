@@ -1,1 +1,1 @@
-docker build . -t gcr.io/$GOOGLE_CLOUD_PROJECT/loss-landscape-anim:latest
+docker build --platform linux/amd64 . -t gcr.io/$GOOGLE_CLOUD_PROJECT/loss-landscape-anim:latest

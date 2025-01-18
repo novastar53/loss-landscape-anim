@@ -6,6 +6,10 @@ import numpy as np
 import torch
 from matplotlib.animation import FuncAnimation
 
+from io import BytesIO
+from google.cloud import storage
+load_dotenv()
+bucket = client.get_bucket(os.getenv("GCLOUD_BUCKET"))
 
 def _plot_multiclass_decision_boundary(model, data, ax=None):
     X, y = data
@@ -124,7 +128,7 @@ def animate_contour(
     sampling=False,
     max_frames=300,
     figsize=(9, 6),
-    output_to_file=True,
+    output_to="bucket",
     filename="test.gif",
 ):
     """Draw the frames of the animation.
@@ -142,7 +146,7 @@ def animate_contour(
         sampling (optional): Whether to sample from the steps. Defaults to False.
         max_frames (optional): Max number of frames to sample. Defaults to 300.
         figsize (optional): Figure size. Defaults to (9, 6).
-        output_to_file (optional): Whether to write to file. Defaults to True.
+        output_to (optional): Whether to write to file or bucket, or none. Defaults to bucket.
         filename (optional): Defaults to "test.gif".
     """
     if sampling:
@@ -205,7 +209,7 @@ def animate_contour(
         fig, animate, frames=len(param_steps), interval=100, blit=False, repeat=False
     )
 
-    if output_to_file:
+    if output_to=="file":
         print(f"Writing {filename}.")
         anim.save(
             f"./{filename}",
@@ -214,6 +218,13 @@ def animate_contour(
             progress_callback=_animate_progress,
         )
         print(f"\n{filename} created successfully.")
+    elif output_to=="bucket":
+        print(f"Uploading to gcloud storage.")
+        buffer = BytesIO()
+        anim.save(buffer, format='gif')
+        buffer.seek(0)
+        blob = bucket.blob(filename)
+        blob.upload_from_file(buffer, content_type='image/gif')
     else:
         plt.ioff()
         plt.show()

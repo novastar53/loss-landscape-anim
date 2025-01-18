@@ -4,7 +4,7 @@ import numpy as np
 from loss_landscape_anim import LeNet, MNISTDataModule, loss_landscape_anim
 
 if __name__ == "__main__":
-    loss_landscape_anim(n_epochs=300, output_filename="output/sample.gif")
+    loss_landscape_anim(n_epochs=300, output_filename="sample.gif")
 
     """
     u_gen = np.random.normal(size=61706)
