@@ -1,5 +1,7 @@
 # pylint: disable = no-member, unused-variable
+import os
 import warnings
+#from dotenv import load_dotenv
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +10,9 @@ from matplotlib.animation import FuncAnimation
 
 from io import BytesIO
 from google.cloud import storage
-load_dotenv()
+
+#load_dotenv()
+client = storage.Client()
 bucket = client.get_bucket(os.getenv("GCLOUD_BUCKET"))
 
 def _plot_multiclass_decision_boundary(model, data, ax=None):
@@ -219,9 +223,17 @@ def animate_contour(
         )
         print(f"\n{filename} created successfully.")
     elif output_to=="bucket":
+        anim.save(
+            f"./{filename}",
+            writer="imagemagick",
+            fps=giffps,
+            progress_callback=_animate_progress,
+        )
+        print(f"\n{filename} created successfully.")
         print(f"Uploading to gcloud storage.")
         buffer = BytesIO()
-        anim.save(buffer, format='gif')
+        with open(filename, 'rb') as file:
+            buffer.write(file.read()) 
         buffer.seek(0)
         blob = bucket.blob(filename)
         blob.upload_from_file(buffer, content_type='image/gif')

@@ -33,7 +33,7 @@ def loss_landscape_anim(
     model_filename="model.pt",
     gpus=0,
     load_model=False,
-    output_to_file=True,
+    output_to="bucket",
     output_filename="sample.gif",
     giffps=15,
     sampling=False,
@@ -161,7 +161,7 @@ def loss_landscape_anim(
         pcvariances=pcvariances,
         giffps=giffps,
         sampling=sampling,
-        output_to_file=output_to_file,
+        output_to=output_to,
         filename=output_filename,
     )
     if return_data:
